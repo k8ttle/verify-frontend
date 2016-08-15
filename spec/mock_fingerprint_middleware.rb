@@ -1,11 +1,14 @@
-class MockFingerprintMiddleware < Sinatra::Base
+class MockFingerprintMiddleware
   def initialize(request_log)
-    super
     @request_log = request_log
   end
 
-  get '/assets2/fp.gif' do
-    @request_log.log(params)
-    'OK'
+  def call(env)
+    request = ActionDispatch::Request.new(env)
+    if request.path == '/assets2/fp.gif'
+      params = request.params
+      @request_log.log(params)
+    end
+    ['200', {}, ['']]
   end
 end
